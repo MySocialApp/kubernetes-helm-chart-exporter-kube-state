@@ -1,7 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "exporter-kube-state.fullname" . }}
+  name: {{ template "exporter-kube-state.name" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "exporter-kube-state.name" . }}
     component: kube-state
@@ -12,18 +13,17 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 10
-  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: {{ template "exporter-kube-state.fullname" . }}
+      app: {{ template "exporter-kube-state.name" . }}
   template:
     metadata:
       labels:
-        app: {{ template "exporter-kube-state.fullname" . }}
+        app: {{ template "exporter-kube-state.name" . }}
         component: kube-state
         release: {{ .Release.Name }}
         version: "{{ .Values.kube_state_metrics.image.tag }}"
@@ -61,16 +61,16 @@ spec:
         command:
           - /pod_nanny
           - --container={{ .Chart.Name }}
-          - --cpu=100m
-          - --extra-cpu=1m
-          - --memory=100Mi
-          - --extra-memory=2Mi
+          - --cpu={{ .Values.addon_resizer.cpu }}
+          - --extra-cpu={{ .Values.addon_resizer.extra_cpu }}
+          - --memory={{ .Values.addon_resizer.memory }}
+          - --extra-memory={{ .Values.addon_resizer.extra_memory }}
           - --threshold=5
-          - --deployment={{ template "exporter-kube-state.fullname" . }}
+          - --deployment={{ template "exporter-kube-state.name" . }}
         resources:
 {{ toYaml .Values.addon_resizer.resources | indent 12 }}
     {{- if .Values.global.rbacEnable }}
-      serviceAccountName: {{ template "exporter-kube-state.fullname" . }}
+      serviceAccountName: {{ template "exporter-kube-state.name" . }}
     {{- end }}
     {{- if .Values.kube_state_metrics.tolerations }}
       tolerations:

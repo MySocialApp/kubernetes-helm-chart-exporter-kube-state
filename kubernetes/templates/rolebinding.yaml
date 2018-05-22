@@ -11,12 +11,13 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "exporter-kube-state.fullname" . }}
+  name: {{ template "exporter-kube-state.name" . }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "exporter-kube-state.fullname" . }}
+  name: {{ template "exporter-kube-state.name" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "exporter-kube-state.fullname" . }}
+  name: {{ template "exporter-kube-state.name" . }}
 {{- end }}

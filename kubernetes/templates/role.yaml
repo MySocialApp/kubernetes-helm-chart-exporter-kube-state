@@ -11,13 +11,14 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "exporter-kube-state.fullname" . }}
+  name: {{ template "exporter-kube-state.name" . }}
+  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]
   resources: ["pods"]
   verbs: ["get"]
 - apiGroups: ["extensions"]
   resources: ["deployments"]
-  resourceNames: [{{ template "exporter-kube-state.fullname" . }}]
+  resourceNames: [{{ template "exporter-kube-state.name" . }}]
   verbs: ["get", "update"]
 {{- end }}
