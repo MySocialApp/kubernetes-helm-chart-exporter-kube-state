@@ -11,7 +11,7 @@ global:
 kube_state_metrics:
   image:
     repository: quay.io/mxinden/kube-state-metrics
-    tag: v1.4.0-gzip.3
+    tag: v1.4.0-perf.9
     pullPolicy: IfNotPresent
   service:
     name: kube-state-metrics
